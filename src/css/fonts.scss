@@ -1,0 +1,75 @@
+@function str-replace($string, $search, $replace: "") {
+  $index: str-index($string, $search);
+
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+
+  @return $string;
+}
+
+@mixin font-face($name, $path, $weight: null, $style: null, $exts: eot woff2 woff ttf svg) {
+  $src: null;
+
+  $extmods: (
+    eot: "?",
+    svg: "#" + str-replace($name, " ", "_")
+  );
+
+  $formats: (
+    otf: "opentype",
+    ttf: "truetype"
+  );
+
+  @each $ext in $exts {
+    $extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+    $format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+    $src: append($src, url(quote($path + "." + $extmod)) format(quote($format)), comma);
+  }
+
+  @font-face {
+    font-family: quote($name);
+    font-weight: $weight;
+    font-style: $style;
+
+    // font-display: block;
+    src: $src;
+  }
+}
+
+// 100 - Thin
+// 200 - Extra Light (Ultra Light)
+// 300 - Light
+// 400 - Normal
+// 500 - Medium
+// 600 - Semi Bold (Demi Bold)
+// 700 - Bold
+// 800 - Extra Bold (Ultra Bold)
+// 900 - Black (Heavy)
+
+// @include font-face('name', '/template/fonts/filename', bold,   normal, woff2 woff ttf eot);
+// @include font-face('name', '/template/fonts/filename', normal, normal, woff2 woff ttf eot);
+
+
+
+@include font-face('Work Sans', '/fonts/Work Sans/WorkSans-SemiBold', 600, normal, woff2 woff ttf otf eot);
+
+@include font-face('Work Sans', '/fonts/Work Sans/WorkSans-Medium', 500, normal, woff2 woff ttf otf eot);
+
+@include font-face('Work Sans', '/fonts/Work Sans/WorkSans-Regular', normal, normal, woff2 woff ttf otf eot);
+
+@include font-face('Work Sans', '/fonts/Work Sans/WorkSans-Light', 300, normal, woff2 woff ttf otf eot);
+
+
+
+b,
+strong {
+  font-weight: bold;
+}
+
+code,
+pre,
+q {
+  font-size: .96em;
+  font-family: SFMono-Regular, Menlo, Consolas, Inconsolata, monospace;
+}
